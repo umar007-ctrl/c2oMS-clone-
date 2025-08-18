@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C2o MS</title>
+    <link rel="website icon" type="png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#009a86',
+                        darkbg: '#1a1a1a',
+                        darkcard: '#2d2d2d',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans dark:bg-darkbg">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-white text-black dark:bg-darkcard dark:text-white">
+                <!-- Logo -->
+                <div class="flex items-center justify-center h-16 px-4">
+                    <img src="c2o-ms-dark-asideLOGO.gif" alt="nav logo" class="h-12 w-auto">
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+                    <a href="#" class="flex items-center px-4 py-2 text-black bg-primary hover:bg-gray-500 transition-colors rounded-lg dark:text-white dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                    
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-500 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        My Profile
+                    </a>
+                    
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-500 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        My Rota
+                    </a>
+                    
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-500 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Public Events
+                    </a>
+                    
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-500 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.74 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Settings
+                    </a>
+                </nav>
+                
+                <!-- User Profile -->
+                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center">
+                        <img class="w-10 h-10 rounded-full" src="1.jpeg" alt="User avatar">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium dark:text-white">Abc</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">c2o.ms.net</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm dark:bg-darkcard">
+                <div class="px-4 py-4">
+                    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Dashboard</h1>
+                </div>
+            </header>
+            
+            <main class="flex-1 overflow-y-auto bg-gray-100 dark:bg-darkbg">
+                <div class="max-w-md mx-auto p-4">
+                    <!-- Greeting Box -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6 dark:bg-darkcard">
+                        <!-- Time and Date -->
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-2xl font-semibold text-black dark:text-white" id="current-time">11:03</div>
+                            <div class="text-gray-600 dark:text-gray-400" id="current-date">Wed, 13 Aug</div>
+                        </div>
+                        
+                        <!-- Greeting Message -->
+                        <div class="mb-4">
+                            <h2 class="text-3xl font-bold text-primary dark:text-[#009a86]">GOOD MORNING!</h2>
+                            <p class="text-lg font-semibold text-black dark:text-white">Test Account</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Remember every good conversation starts with listening...</p>
+                        </div>
+                   
+                    
+        
+        <!-- Dark Mode Toggle Button (Bottom Right) -->
+        <div class="fixed bottom-6 right-6">
+            <button id="darkModeToggle" class="p-4 bg-black rounded-full text-white shadow-lg hover:bg-gray-800 transition-colors">
+                <svg id="darkIcon" class="w-6 h-6 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+                <svg id="lightIcon" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkIcon = document.getElementById('darkIcon');
+            const lightIcon = document.getElementById('lightIcon');
+            
+            // Initialize dark mode
+            function initDarkMode() {
+                const isDark = localStorage.getItem('darkMode') === 'true' || 
+                              (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateIcons();
+            }
+            
+            // Update icon visibility
+            function updateIcons() {
+                const isDark = document.documentElement.classList.contains('dark');
+                darkIcon.classList.toggle('hidden', isDark);
+                lightIcon.classList.toggle('hidden', !isDark);
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                updateIcons();
+            });
+            
+            // Initialize on page load
+            initDarkMode();
+            
+            // Listen for system preference changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('darkMode')) {
+                    initDarkMode();
+                }
+            });
+
+            // Update time and date dynamically
+            function updateTime() {
+                const now = new Date();
+                
+                // Update time
+                const timeElement = document.getElementById('current-time');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                timeElement.textContent = `${hours}:${minutes}`;
+                
+                // Update date
+                const dateElement = document.getElementById('current-date');
+                const options = { weekday: 'short', day: 'numeric', month: 'short' };
+                dateElement.textContent = now.toLocaleDateString('en-US', options);
+                
+                // Update greeting based on time of day
+                const greetingElement = document.querySelector('h2');
+                const hour = now.getHours();
+                if (hour < 12) {
+                    greetingElement.textContent = 'GOOD MORNING!';
+                } else if (hour < 18) {
+                    greetingElement.textContent = 'GOOD AFTERNOON!';
+                } else {
+                    greetingElement.textContent = 'GOOD EVENING!';
+                }
+            }
+            
+            // Update immediately and then every minute
+            updateTime();
+            setInterval(updateTime, 60000);
+        });
+    </script>
+</body>
+</html>
