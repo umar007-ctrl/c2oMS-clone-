@@ -2,86 +2,58 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C20 Management</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="website icon" type="png" href="icon.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C2 Management</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="website icon" type="png" href="icon.png" />
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                fontFamily: {
-                    sans: ['Nunito', 'sans-serif'],
-                },
+                fontFamily: { sans: ['Nunito', 'sans-serif'] },
                 extend: {
                     colors: {
                         primary: '#009a86',
                         darkbg: '#1a1a1a',
                         darkcard: '#2d2d2d',
-                    }
-                }
-            }
-        }
+                    },
+                },
+            },
+        };
     </script>
+
     <style>
-        .dropdown-content {
-            display: none;
-            position: static;
-            width: 100%;
-        }
+        .dropdown-content { display: none; position: static; width: 100%; }
+        .dropdown.active .dropdown-content { display: block; }
 
-        .dropdown.active .dropdown-content {
-            display: block;
-        }
-        
         .chatbot-container {
-            display: none;
-            position: fixed;
-            bottom: 100px;
-            right: 100px;
-            width: 300px;
-            height: 400px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            display: none; position: fixed; bottom: 100px; right: 100px;
+            width: 300px; height: 400px; background: white; border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 1000;
         }
-
-        .chatbot-container.active {
-            display: block;
-        }
+        .chatbot-container.active { display: block; }
 
         /* Responsive sidebar */
         @media (max-width: 768px) {
-            .sidebar-collapsed {
-                width: 80px !important;
-                overflow: hidden;
-            }
-            .sidebar-collapsed .nav-text {
-                display: none;
-            }
-            .sidebar-collapsed .dropdown-content {
-                display: none !important;
-            }
-            .sidebar-collapsed .user-info {
-                display: none;
-            }
-            .sidebar-collapsed .logo-expanded {
-                display: none;
-            }
-            .sidebar-collapsed .logo-collapsed {
-                display: block !important;
-            }
+            .sidebar-collapsed { width: 80px !important; overflow: hidden; }
+            .sidebar-collapsed .nav-text { display: none; }
+            .sidebar-collapsed .dropdown-content { display: none !important; }
+            .sidebar-collapsed .user-info { display: none; }
+            .sidebar-collapsed .logo-expanded { display: none; }
+            .sidebar-collapsed .logo-collapsed { display: block !important; }
         }
-
-        .logo-collapsed {
-            display: none;
-        }
+        .logo-collapsed { display: none; }
+        .sidebar-toggle-arrow { transition: transform 0.3s ease; }
+        .sidebar-collapsed .sidebar-toggle-arrow { transform: rotate(180deg); }
     </style>
 </head>
 
@@ -93,27 +65,21 @@
                 <!-- Logo and Toggle -->
                 <div class="flex items-center justify-between h-16 px-4 border-b dark:border-gray-700">
                     <div class="flex items-center">
-                        <img src="c2o-ms-Dark-asideLOGO.gif" alt="nav logo" class="h-12 w-auto block dark:hidden logo-expanded">
-                        <img src="c2o-ms-light-asideLOGO.gif" alt="nav logo" class="h-12 w-auto hidden dark:block logo-expanded">
-                        <img src="icon.png" alt="collapsed logo" class="h-10 w-auto logo-collapsed">
+                        <img src="c2o-ms-Dark-asideLOGO.gif" alt="nav logo" class="h-12 w-auto block dark:hidden logo-expanded" />
+                        <img src="c2o-ms-light-asideLOGO.gif" alt="nav logo" class="h-12 w-auto hidden dark:block logo-expanded" />
                     </div>
-                    <button id="sidebarToggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <i class="fas fa-bars"></i>
-                    </button>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-black bg-primary hover:bg-gray-200 transition-colors rounded-lg dark:text-white dark:hover:bg-gray-700">
+                    <a href="#" class="flex items-center px-4 py-2 text-black bg-primary hover:bg-gray-200 transition-colors rounded-lg dark:text-white dark:hover:bg-gray-700">
                         <i class="fas fa-home mr-3 w-5 text-center"></i>
                         <span class="nav-text">Dashboard</span>
                     </a>
 
                     <!-- Profile Dropdown -->
                     <div class="dropdown">
-                        <button
-                            class="flex items-center justify-between w-full px-4 py-2 text-black rounded-lg hover:bg-gray-200 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <button class="flex items-center justify-between w-full px-4 py-2 text-black rounded-lg hover:bg-gray-200 transition-colors dark:text-white dark:hover:bg-gray-700">
                             <div class="flex items-center">
                                 <i class="fas fa-user mr-3 w-5 text-center"></i>
                                 <span class="nav-text">My Profile</span>
@@ -121,43 +87,36 @@
                             <i class="fas fa-chevron-down ml-2 transition-transform duration-200 dropdown-arrow nav-text"></i>
                         </button>
                         <div class="dropdown-content pl-8 space-y-1">
-                            <a href="#"
-                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                            <a href="personal.html" class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
                                 <i class="fas fa-id-card mr-3 w-5 text-center"></i>
                                 <span class="nav-text">Personal</span>
                             </a>
-                            <a href="#"
-                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                            <a href="#" class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
                                 <i class="fas fa-file-invoice-dollar mr-3 w-5 text-center"></i>
                                 <span class="nav-text">Payslips</span>
                             </a>
-                            <a href="#"
-                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                            <a href="#" class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
                                 <i class="fas fa-clipboard-list mr-3 w-5 text-center"></i>
                                 <span class="nav-text">Q Board</span>
                             </a>
-                            <a href="#"
-                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                            <a href="#" class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
                                 <i class="fas fa-file-contract mr-3 w-5 text-center"></i>
                                 <span class="nav-text">Policy</span>
                             </a>
                         </div>
                     </div>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
                         <i class="fas fa-calendar-alt mr-3 w-5 text-center"></i>
                         <span class="nav-text">My Rota</span>
                     </a>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
                         <i class="fas fa-calendar-day mr-3 w-5 text-center"></i>
                         <span class="nav-text">Public Events</span>
                     </a>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-200">
+                    <a href="#" class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-200">
                         <i class="fas fa-cog mr-3 w-5 text-center"></i>
                         <span class="nav-text">Settings</span>
                     </a>
@@ -166,7 +125,7 @@
                 <!-- User Profile -->
                 <div class="p-4 border-t border-gray-200 dark:border-gray-700 user-info">
                     <div class="flex items-center">
-                        <img class="w-10 h-10 rounded-full" src="1.jpeg" alt="User avatar">
+                        <img class="w-10 h-10 rounded-full" src="1.jpeg" alt="User avatar" />
                         <div class="ml-3">
                             <p class="text-sm font-medium dark:text-white">Admin</p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">c2o.ms.net</p>
@@ -192,8 +151,7 @@
                 <!-- Search Bar -->
                 <div class="max-w-md mx-auto mb-6">
                     <div class="relative">
-                        <input type="text" placeholder="Search..." 
-                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-darkcard focus:outline-none focus:ring-2 focus:ring-primary">
+                        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-darkcard focus:outline-none focus:ring-2 focus:ring-primary" />
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                     </div>
                 </div>
@@ -220,9 +178,9 @@
                                         <i id="greetingIcon" class="fas fa-sun mr-2"></i>GOOD AFTERNOON!
                                     </h2>
                                     <div class="flex items-center mt-2">
-                                        <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon" class="h-8 w-8">
+                                        <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon" class="h-8 w-8" />
                                         <span id="weatherTemp" class="ml-2 text-lg">24°C</span>
-                                        <span id="weatherDesc" class="ml-2 text-gray-600 dark:text-gray-400">Sunny</span>
+                                        <span id="weatherDesc" class="ml-2 text-gray-600 dark:text-gray-400">Sunny, ISB</span>
                                     </div>
                                 </div>
                                 <div>
@@ -249,62 +207,47 @@
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-play-circle mr-2"></i>Start:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-play-circle mr-2"></i>Start:</p>
                                     <p class="text-black dark:text-white font-semibold">10:00</p>
                                 </div>
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-sign-in-alt mr-2"></i>Clock-In At:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-sign-in-alt mr-2"></i>Clock-In At:</p>
                                     <p class="text-black dark:text-white font-semibold">10:00</p>
                                 </div>
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-hourglass-half mr-2"></i>Schedule Hours:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-hourglass-half mr-2"></i>Schedule Hours:</p>
                                     <p class="text-black dark:text-white font-semibold">8H 0M</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-stop-circle mr-2"></i>End:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-stop-circle mr-2"></i>End:</p>
                                     <p class="text-black dark:text-white font-semibold">18:00</p>
                                 </div>
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-sign-out-alt mr-2"></i>Clock-Out At:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-sign-out-alt mr-2"></i>Clock-Out At:</p>
                                     <p class="text-black dark:text-white font-semibold">18:28</p>
                                 </div>
                                 <div>
-                                    <p class="text-gray-600 dark:text-gray-400">
-                                        <i class="fas fa-history mr-2"></i>Actual Hours:
-                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400"><i class="fas fa-history mr-2"></i>Actual Hours:</p>
                                     <p class="text-black dark:text-white font-semibold">---</p>
                                 </div>
                             </div>
 
-                            <!-- Clock Out Button moved to shift form -->
                             <div class="mt-6 text-center">
                                 <p class="text-green-500 font-bold text-lg mb-4">
                                     <i class="fas fa-check-circle mr-2"></i>ON TIME
                                 </p>
-                                <button
-                                    class="bg-primary text-white py-3 px-6 rounded-lg font-semibold w-full bg-red-600 hover:bg-opacity-90 transition-colors">
+                                <button class="bg-red-600 text-white py-3 px-6 rounded-lg font-semibold w-full hover:bg-opacity-90 transition-colors">
                                     <i class="fas fa-door-open mr-2"></i>CLOCK OUT
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Column (Leave Details) -->
+                    <!-- Right Column (Announcement) -->
                     <div class="w-full md:w-1/2 space-y-4">
-                        <!-- Announcement Box -->
                         <div class="bg-white rounded-xl shadow-md p-6 dark:bg-darkcard h-90%">
                             <h3 class="text-xl font-bold text-black dark:text-white mb-4">
                                 <i class="fas fa-bullhorn mr-2"></i>Announcement
@@ -321,25 +264,23 @@
         </div>
     </div>
 
-    <!-- Chatbot Container (hidden by default) -->
+    <!-- Chatbot Container -->
     <div id="chatbotContainer" class="chatbot-container dark:bg-darkcard dark:text-white">
         <div class="p-4 border-b dark:border-gray-600">
-            <h3 class="font-bold"><i class="fas fa-robot mr-2"></i>Hey! I'm Your C2o MS </h3>
-            <button id="closeChatbot" class="float-right text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <h3 class="font-bold"><i class="fas fa-robot mr-2"></i>Hey! I'm Your C2O MS</h3>
+            <button id="closeChatbot" class="float-right text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" aria-label="Close chatbot">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="p-4 h-64 overflow-y-auto" id="chatMessages">
-            <!-- Chat messages will appear here -->
             <div class="text-center text-gray-500 dark:text-gray-400 mt-20">
-                <i class="fas fa-comments text-4xl mb-4 hidden text-ellipsis"></i>
+                <i class="fas fa-comments text-4xl mb-4"></i>
                 <p>How can we help you today?</p>
             </div>
         </div>
         <div class="p-4 border-t dark:border-gray-600">
             <div class="flex">
-                <input type="text" placeholder="Type your message..." id="chatInput"
-                    class="w-full p-2 rounded-l border dark:bg-darkbg dark:border-gray-600">
+                <input type="text" placeholder="Type your message..." id="chatInput" class="w-full p-2 rounded-l border dark:bg-darkbg dark:border-gray-600" />
                 <button id="sendMessage" class="bg-primary text-white px-4 py-2 rounded-r">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -349,22 +290,16 @@
 
     <!-- Floating Buttons -->
     <div class="fixed bottom-6 right-6 flex space-x-4">
-        <!-- Chatbot Button -->
-        <button id="chatbotToggle"
-            class="p-4 bg-primary rounded-full text-white shadow-lg hover:bg-opacity-90 transition-colors">
+        <button id="chatbotToggle" class="p-4 bg-primary rounded-full text-white shadow-lg hover:bg-opacity-90 transition-colors" aria-label="Toggle chatbot">
             <i class="fas fa-comment-dots text-xl"></i>
         </button>
-        
-        <!-- Dark Mode Toggle Button -->
-        <button id="darkModeToggle"
-            class="p-4 bg-black rounded-full text-white shadow-lg hover:bg-gray-800 transition-colors">
+        <button id="darkModeToggle" class="p-4 bg-black rounded-full text-white shadow-lg hover:bg-gray-800 transition-colors" aria-label="Toggle dark mode">
             <i id="darkIcon" class="fas fa-moon text-xl dark:hidden"></i>
             <i id="lightIcon" class="fas fa-sun text-xl hidden dark:block"></i>
         </button>
     </div>
 
     <script>
-        // Dark mode toggle functionality
         document.addEventListener('DOMContentLoaded', function () {
             const darkModeToggle = document.getElementById('darkModeToggle');
             const darkIcon = document.getElementById('darkIcon');
@@ -377,61 +312,31 @@
             const chatMessages = document.getElementById('chatMessages');
             const dropdowns = document.querySelectorAll('.dropdown');
             const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarToggle = document.getElementById('sidebarToggle'); // may be null (guard below)
             const mobileMenuButton = document.getElementById('mobileMenuButton');
 
-            // Initialize dark mode
+            // ==== Dark mode ====
             function initDarkMode() {
-                const isDark = localStorage.getItem('darkMode') === 'true' ||
-                    (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-                if (isDark) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
+                const isDark = localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
                 updateIcons();
             }
-
-            // Update icon visibility
             function updateIcons() {
                 const isDark = document.documentElement.classList.contains('dark');
                 darkIcon.classList.toggle('hidden', isDark);
                 lightIcon.classList.toggle('hidden', !isDark);
             }
-
-            // Toggle dark mode
             darkModeToggle.addEventListener('click', function () {
                 const isDark = document.documentElement.classList.toggle('dark');
                 localStorage.setItem('darkMode', isDark);
                 updateIcons();
             });
 
-            // Toggle chatbot
-            chatbotToggle.addEventListener('click', function() {
-                chatbotContainer.classList.toggle('active');
-            });
+            // ==== Chatbot open/close ====
+            chatbotToggle.addEventListener('click', function () { chatbotContainer.classList.toggle('active'); });
+            closeChatbot.addEventListener('click', function () { chatbotContainer.classList.remove('active'); });
 
-            closeChatbot.addEventListener('click', function() {
-                chatbotContainer.classList.remove('active');
-            });
-
-            // Simple chatbot functionality
-            sendMessage.addEventListener('click', function() {
-                const message = chatInput.value.trim();
-                if (message) {
-                    // Add user message
-                    addMessage(message, 'user');
-                    
-                    // Simulate bot response
-                    setTimeout(() => {
-                        addMessage("Hey! I'm C2O MS Bot, your intelligent workplace companion. I'm here 24/7 to help you optimize your work life!", 'bot');
-                    }, 1000);
-                    
-                    chatInput.value = '';
-                }
-            });
-
+            // ==== Chat UI helpers ====
             function addMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `mb-2 p-2 rounded-lg ${sender === 'user' ? 'bg-primary text-white ml-auto max-w-xs' : 'bg-gray-200 dark:bg-gray-700 mr-auto max-w-xs'}`;
@@ -439,116 +344,156 @@
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
+            function addTypingIndicator() {
+                const div = document.createElement('div');
+                const id = 'typing-' + Date.now();
+                div.id = id;
+                div.className = 'mb-2 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 mr-auto max-w-xs italic opacity-80';
+                div.textContent = 'C2O is typing…';
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                return id;
+            }
+            function removeTypingIndicator(id) {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            }
 
-            // Dropdown click functionality
-            dropdowns.forEach(dropdown => {
+            // ==== YOUR BOT ENDPOINT (ngrok) ====
+            const BOT_ENDPOINT = 'https://ac39a92549b4.ngrok-free.app/chat';
+
+            async function sendToBot(userText) {
+                // Adjust body key if your server expects something else (e.g., { query: userText } or { prompt: userText })
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+                try {
+                    const res = await fetch(BOT_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: userText }),
+                        signal: controller.signal,
+                    });
+                    clearTimeout(timeout);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                    const ct = res.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        const data = await res.json();
+                        // Try common field names; fallback to stringify whole object
+                        return (
+                            data.reply ||
+                            data.message ||
+                            data.response ||
+                            data.answer ||
+                            (typeof data === 'string' ? data : JSON.stringify(data))
+                        );
+                    } else {
+                        return await res.text();
+                    }
+                } catch (err) {
+                    throw err;
+                }
+            }
+
+            // Send handlers (button + Enter)
+            sendMessage.addEventListener('click', handleSend);
+            chatInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                }
+            });
+
+            async function handleSend() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                addMessage(message, 'user');
+                chatInput.value = '';
+                const typingId = addTypingIndicator();
+                sendMessage.disabled = true;
+                try {
+                    const reply = await sendToBot(message);
+                    removeTypingIndicator(typingId);
+                    addMessage(reply, 'bot');
+                } catch (e) {
+                    removeTypingIndicator(typingId);
+                    addMessage("Sorry, I couldn't reach the chatbot server. Please try again.", 'bot');
+                    console.error(e);
+                } finally {
+                    sendMessage.disabled = false;
+                }
+            }
+
+            // ==== Dropdowns ====
+            dropdowns.forEach((dropdown) => {
                 const button = dropdown.querySelector('button');
                 const arrow = dropdown.querySelector('.dropdown-arrow');
-
-                button.addEventListener('click', function(e) {
+                button.addEventListener('click', function (e) {
                     e.preventDefault();
                     dropdown.classList.toggle('active');
                     arrow.classList.toggle('rotate-180');
-                    
-                    // Close other dropdowns
-                    dropdowns.forEach(otherDropdown => {
-                        if (otherDropdown !== dropdown) {
-                            otherDropdown.classList.remove('active');
-                            otherDropdown.querySelector('.dropdown-arrow').classList.remove('rotate-180');
+                    dropdowns.forEach((other) => {
+                        if (other !== dropdown) {
+                            other.classList.remove('active');
+                            const a = other.querySelector('.dropdown-arrow');
+                            if (a) a.classList.remove('rotate-180');
                         }
                     });
                 });
             });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!e.target.closest('.dropdown')) {
-                    dropdowns.forEach(dropdown => {
-                        dropdown.classList.remove('active');
-                        dropdown.querySelector('.dropdown-arrow').classList.remove('rotate-180');
+                    dropdowns.forEach((d) => {
+                        d.classList.remove('active');
+                        const a = d.querySelector('.dropdown-arrow');
+                        if (a) a.classList.remove('rotate-180');
                     });
                 }
             });
 
-            // Sidebar toggle
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('sidebar-collapsed');
-            });
-
-            // Mobile menu toggle
-            mobileMenuButton.addEventListener('click', function() {
-                sidebar.classList.toggle('hidden');
-            });
-
-            // Initialize on page load
-            initDarkMode();
-
-            // Listen for system preference changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-                if (!localStorage.getItem('darkMode')) {
-                    initDarkMode();
-                }
-            });
-
-            // Weather data and descriptions
-            const weatherConditions = [
-                { icon: '01d', desc: 'Sunny', temp: () => Math.floor(Math.random() * 10) + 25 }, // 25-35°C
-                { icon: '02d', desc: 'Partly Cloudy', temp: () => Math.floor(Math.random() * 8) + 22 }, // 22-30°C
-                { icon: '03d', desc: 'Cloudy', temp: () => Math.floor(Math.random() * 6) + 18 }, // 18-24°C
-                { icon: '04d', desc: 'Overcast', temp: () => Math.floor(Math.random() * 5) + 15 }, // 15-20°C
-                { icon: '09d', desc: 'Rainy', temp: () => Math.floor(Math.random() * 5) + 12 }, // 12-17°C
-                { icon: '10d', desc: 'Light Rain', temp: () => Math.floor(Math.random() * 5) + 15 }, // 15-20°C
-                { icon: '11d', desc: 'Thunderstorm', temp: () => Math.floor(Math.random() * 5) + 10 }, // 10-15°C
-                { icon: '13d', desc: 'Snowy', temp: () => Math.floor(Math.random() * 5) + 0 }, // 0-5°C
-                { icon: '50d', desc: 'Misty', temp: () => Math.floor(Math.random() * 5) + 10 } // 10-15°C
-            ];
-
-            // Get weather data
-            function getWeather() {
-                const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
-                
-                document.getElementById('weatherTemp').textContent = `${randomWeather.temp()}°C`;
-                document.getElementById('weatherIcon').src = `https://openweathermap.org/img/wn/${randomWeather.icon}@2x.png`;
-                document.getElementById('weatherDesc').textContent = randomWeather.desc;
+            // ==== Sidebar & Mobile menu ====
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () { sidebar.classList.toggle('sidebar-collapsed'); });
             }
+            mobileMenuButton.addEventListener('click', function () { sidebar.classList.toggle('hidden'); });
 
-            // Update time and date dynamically
+            // ==== Time, Date, Greeting ====
             function updateTime() {
                 const now = new Date();
-
-                // Update time
                 const timeElement = document.getElementById('time');
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
                 timeElement.textContent = `${hours}:${minutes}`;
 
-                // Update date
                 const dateElement = document.getElementById('date');
                 const options = { weekday: 'short', day: 'numeric', month: 'short' };
                 dateElement.textContent = now.toLocaleDateString('en-US', options);
 
-                // Update greeting based on time of day
                 const greetingElement = document.getElementById('greeting');
-                const greetingIcon = document.getElementById('greetingIcon');
                 const hour = now.getHours();
-                
                 if (hour < 12) {
-                    greetingElement.innerHTML = '<i id="greetingIcon" class="fas fa-sun mr-2"></i>GOOD MORNING!';
+                    greetingElement.innerHTML = '<i class="fas fa-sun mr-2"></i>GOOD MORNING!';
                 } else if (hour < 18) {
-                    greetingElement.innerHTML = '<i id="greetingIcon" class="fas fa-sun mr-2"></i>GOOD AFTERNOON!';
+                    greetingElement.innerHTML = '<i class="fas fa-sun mr-2"></i>GOOD AFTERNOON!';
                 } else {
-                    greetingElement.innerHTML = '<i id="greetingIcon" class="fas fa-moon mr-2"></i>GOOD EVENING!';
+                    greetingElement.innerHTML = '<i class="fas fa-moon mr-2"></i>GOOD EVENING!';
                 }
             }
-
-            // Update immediately and then every minute
             updateTime();
-            getWeather();
             setInterval(updateTime, 60000);
-            // Update weather every hour
-            setInterval(getWeather, 3600000);
+
+            // Weather placeholder to avoid ReferenceError (implement later if needed)
+            function getWeather() { /* no-op */ }
+
+            // Initialize on page load
+            initDarkMode();
+            getWeather();
+
+            // React to system preference changes if user hasn't set a preference
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+                if (!localStorage.getItem('darkMode')) initDarkMode();
+            });
         });
     </script>
 </body>
-
 </html>
