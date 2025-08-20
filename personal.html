@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Profile - C2 Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="website icon" type="png" href="icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                fontFamily: {
+                    sans: ['Nunito', 'sans-serif'],
+                },
+                extend: {
+                    colors: {
+                        primary: '#009a86',
+                        darkbg: '#1a1a1a',
+                        darkcard: '#2d2d2d',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .dropdown-content {
+            display: none;
+            position: static;
+            width: 100%;
+        }
+
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive sidebar */
+        @media (max-width: 768px) {
+            .sidebar-collapsed {
+                width: 80px !important;
+                overflow: hidden;
+            }
+
+            .sidebar-collapsed .nav-text {
+                display: none;
+            }
+
+            .sidebar-collapsed .dropdown-content {
+                display: none !important;
+            }
+
+            .sidebar-collapsed .user-info {
+                display: none;
+            }
+
+            .sidebar-collapsed .logo-expanded {
+                display: none;
+            }
+
+            .sidebar-collapsed .logo-collapsed {
+                display: block !important;
+            }
+        }
+
+        .logo-collapsed {
+            display: none;
+        }
+
+        /* Arrow toggle style */
+        .sidebar-toggle-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-collapsed .sidebar-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Edit mode styling */
+        .editable-field {
+            border-bottom: 1px dashed #999;
+            cursor: pointer;
+        }
+
+        .editable-field:hover {
+            background-color: rgba(0, 154, 134, 0.1);
+        }
+
+        .edit-mode .editable-field {
+            border-bottom: 1px solid #009a86;
+            background-color: rgba(0, 154, 134, 0.1);
+        }
+
+        /* Chatbot styling */
+        .chatbot-container {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 100px;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .chatbot-container.active {
+            display: block;
+        }
+
+        /* Compact layout */
+        .compact-layout .info-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .compact-layout .text-lg {
+            font-size: 1rem;
+        }
+
+        .compact-layout .text-xl {
+            font-size: 1.125rem;
+        }
+
+        .compact-layout .text-2xl {
+            font-size: 1.25rem;
+        }
+
+        .compact-layout .p-6 {
+            padding: 1rem;
+        }
+
+        .compact-layout .py-4 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .compact-layout .mb-8 {
+            margin-bottom: 1rem;
+        }
+
+        .compact-layout .mb-6 {
+            margin-bottom: 0.75rem;
+        }
+
+        .compact-layout .mb-4 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tab styling */
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: #009a86;
+        }
+
+        .tab-btn.active {
+            color: #009a86;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .dark .modal-content {
+            background-color: #2d2d2d;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-darkbg font-sans compact-layout">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="hidden md:flex md:flex-shrink-0 transition-all duration-300 ease-in-out">
+            <div class="flex flex-col w-64 bg-white text-black dark:bg-darkcard dark:text-white">
+                <!-- Logo and Toggle -->
+                <div class="flex items-center justify-between h-16 px-4 border-b dark:border-gray-700">
+                    <div class="flex items-center">
+                        <img src="c2o-ms-Dark-asideLOGO.gif" alt="nav logo"
+                            class="h-12 w-auto block dark:hidden logo-expanded">
+                        <img src="c2o-ms-light-asideLOGO.gif" alt="nav logo"
+                            class="h-12 w-auto hidden dark:block logo-expanded">
+                        <img src="icon.png" alt="collapsed logo" class="h-10 w-auto logo-collapsed">
+                    </div>
+                    <button id="sidebarToggle"
+                        class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 sidebar-toggle-arrow">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+                    <a href="index.html"
+                        class="flex items-center px-4 py-2 text-black hover:bg-gray-200 transition-colors rounded-lg dark:text-white dark:hover:bg-gray-700">
+                        <i class="fas fa-home mr-3 w-5 text-center"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown active">
+                        <button
+                            class="flex items-center justify-between w-full px-4 py-2 text-black rounded-lg bg-gray-200 transition-colors dark:text-white dark:bg-gray-700">
+                            <div class="flex items-center">
+                                <i class="fas fa-user mr-3 w-5 text-center"></i>
+                                <span class="nav-text">My Profile</span>
+                            </div>
+                            <i
+                                class="fas fa-chevron-down ml-2 transition-transform duration-200 dropdown-arrow nav-text rotate-180"></i>
+                        </button>
+                        <div class="dropdown-content pl-8 space-y-1" style="display: block;">
+                            <a href="personal.html"
+                                class="flex items-center px-4 py-2 text-white bg-primary dark:bg-primary rounded-lg">
+                                <i class="fas fa-id-card mr-3 w-5 text-center"></i>
+                                <span class="nav-text">Personal</span>
+                            </a>
+                            <a href="payslips.html"
+                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-file-invoice-dollar mr-3 w-5 text-center"></i>
+                                <span class="nav-text">Payslips</span>
+                            </a>
+                            <a href="qboard.html"
+                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-clipboard-list mr-3 w-5 text-center"></i>
+                                <span class="nav-text">Q Board</span>
+                            </a>
+                            <a href="policy.html"
+                                class="flex items-center px-4 py-2 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg">
+                                <i class="fas fa-file-contract mr-3 w-5 text-center"></i>
+                                <span class="nav-text">Policy</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="rota.html"
+                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <i class="fas fa-calendar-alt mr-3 w-5 text-center"></i>
+                        <span class="nav-text">My Rota</span>
+                    </a>
+
+                    <a href="events.html"
+                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-700">
+                        <i class="fas fa-calendar-day mr-3 w-5 text-center"></i>
+                        <span class="nav-text">Public Events</span>
+                    </a>
+
+                    <a href="settings.html"
+                        class="flex items-center px-4 py-2 text-black rounded-lg hover:bg-gray-300 transition-colors dark:text-white dark:hover:bg-gray-200">
+                        <i class="fas fa-cog mr-3 w-5 text-center"></i>
+                        <span class="nav-text">Settings</span>
+                    </a>
+                </nav>
+
+                <!-- User Profile -->
+                <div class="p-4 border-t border-gray-200 dark:border-gray-700 user-info">
+                    <div class="flex items-center">
+                        <img class="w-10 h-10 rounded-full" src="1.jpeg" alt="User avatar">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium dark:text-white">Admin</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">c2o.ms.net</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm dark:bg-darkcard">
+                <div class="px-4 py-4 flex justify-between items-center">
+                    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Personal</h1>
+                    <!-- Mobile menu button -->
+                    <button id="mobileMenuButton"
+                        class="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto bg-gray-100 dark:bg-darkbg p-4">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Personal Profile Section -->
+                    <div class="bg-white rounded-xl shadow-md p-6 dark:bg-darkcard mb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                            <div>
+                                <h2 class="text-xl font-bold text-black dark:text-white"># Personal</h2>
+                            </div>
+                            <div class="flex items-center mt-4 md:mt-0 space-x-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-black dark:text-white">Online</h3>
+                                    <div class="flex items-center mt-1">
+                                        <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Active</span>
+                                    </div>
+                                </div>
+                                <!-- Edit Button -->
+                                <button id="editProfileBtn"
+                                    class="p-2 text-primary dark:text-primary hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Employee Info -->
+                        <div class="mb-4">
+                            <div class="flex items-center">
+                                <div
+                                    class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-black dark:text-white editable-field"
+                                        data-field="name">Muhammad Umar Gul</h3>
+                                    <p class="text-gray-600 dark:text-gray-400">Employee</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 ml-13">
+                                Last Login: N/A (Active)
+                            </p>
+                        </div>
+
+                        <div class="border-t border-b border-gray-200 dark:border-gray-700 py-2 mb-4">
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">COMPANY DETAILS</h3>
+                            <div class="info-grid">
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Department:</div>
+                                <div class="text-black dark:text-white editable-field" data-field="department">Web
+                                    Department</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Waga / Salary:</div>
+                                <div class="text-black dark:text-white editable-field" data-field="salary">N/A</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Job Type:</div>
+                                <div class="text-black dark:text-white editable-field" data-field="jobType">Web
+                                    Developer</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Companies:</div>
+                                <div class="text-black dark:text-white editable-field" data-field="companies"></div>
+                            </div>
+                        </div>
+
+                        <div class="border-b border-gray-200 dark:border-gray-700 py-2 mb-4">
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">c2o Management</h3>
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">PERSONAL INFORMATION</h3>
+                            <div class="info-grid">
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Joining Date</div>
+                                <div class="text-black dark:text-white editable-field" data-field="joiningDate">
+                                    01/07/2023</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Email</div>
+                                <div class="text-black dark:text-white editable-field" data-field="email">Useri@Test.Com
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Gender</div>
+                                <div class="text-black dark:text-white editable-field" data-field="gender">Male</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Job Type</div>
+                                <div class="text-black dark:text-white editable-field" data-field="jobType">Fulltime
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Date of Birth</div>
+                                <div class="text-black dark:text-white editable-field" data-field="dob">03/04/2011</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Phone Number</div>
+                                <div class="text-black dark:text-white editable-field" data-field="phone">+92-12321323
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Blood Group</div>
+                                <div class="text-black dark:text-white editable-field" data-field="bloodGroup">B-</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Status</div>
+                                <div class="text-black dark:text-white editable-field" data-field="status">Active</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Marital Status</div>
+                                <div class="text-black dark:text-white editable-field" data-field="maritalStatus">Single
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Identity Card Number</div>
+                                <div class="text-black dark:text-white editable-field" data-field="idNumber">23442342343
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Age</div>
+                                <div class="text-black dark:text-white editable-field" data-field="age">14</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Designation</div>
+                                <div class="text-black dark:text-white editable-field" data-field="designation">Backend
+                                    Developer</div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Details -->
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">BANK DETAILS</h3>
+                            <div class="info-grid">
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Bank Name</div>
+                                <div class="text-black dark:text-white editable-field" data-field="bankName">Hbil23
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Branch Name</div>
+                                <div class="text-black dark:text-white editable-field" data-field="branchName">123123123
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Account Title</div>
+                                <div class="text-black dark:text-white editable-field" data-field="accountTitle">I23
+                                </div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Account Number</div>
+                                <div class="text-black dark:text-white editable-field" data-field="accountNumber">I23
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emergency Details -->
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">EMERGENCY DETAILS</h3>
+                            <div class="info-grid">
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Name</div>
+                                <div class="text-black dark:text-white editable-field" data-field="emergencyName">
+                                    I23I23I23ad</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Emergency Contact</div>
+                                <div class="text-black dark:text-white editable-field" data-field="emergencyContact">
+                                    +92-3623123</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Identity Card Number</div>
+                                <div class="text-black dark:text-white editable-field" data-field="emergencyId">
+                                    I111-I111-I23-11</div>
+
+                                <div class="font-medium text-gray-600 dark:text-gray-400">Relation</div>
+                                <div class="text-black dark:text-white editable-field" data-field="emergencyRelation">
+                                    I23I23I2123</div>
+                            </div>
+                        </div>
+
+                        <!-- Documents -->
+                        <div>
+                            <h3 class="text-lg font-bold text-black dark:text-white mb-2">DOCUMENTS</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white dark:bg-darkcard">
+                                    <thead>
+                                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                                            <th class="px-4 py-2 text-left text-gray-600 dark:text-gray-400">Sr No</th>
+                                            <th class="px-4 py-2 text-left text-gray-600 dark:text-gray-400">Name</th>
+                                            <th class="px-4 py-2 text-left text-gray-600 dark:text-gray-400">Document
+                                                Type</th>
+                                            <th class="px-4 py-2 text-left text-gray-600 dark:text-gray-400">Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                                            <td class="px-4 py-2 text-black dark:text-white">1</td>
+                                            <td class="px-4 py-2 text-black dark:text-white">N/A</td>
+                                            <td class="px-4 py-2 text-black dark:text-white">Other</td>
+                                            <td class="px-4 py-2 text-black dark:text-white"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        style="display: none;">
+        <div class="bg-white dark:bg-darkcard rounded-lg p-6 w-full max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold dark:text-white">Edit Employee</h3>
+                <button id="closeEditProfileModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4">
+                <button class="tab-btn active px-4 py-2 font-medium text-primary border-b-2 border-primary">Profile</button>
+                <button class="tab-btn px-4 py-2 font-medium text-gray-500 dark:text-gray-400">Details</button>
+                <button class="tab-btn px-4 py-2 font-medium text-gray-500 dark:text-gray-400">Documents</button>
+                <button class="tab-btn px-4 py-2 font-medium text-gray-500 dark:text-gray-400">Credentials</button>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="tab-content active">
+                <h4 class="text-md font-bold dark:text-white mb-4">Basic Information</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* First Name</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="Test">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* Last Name</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="Account">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-1">* Email</label>
+                    <input type="email" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="useri@test.com">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* Date of birth</label>
+                        <input type="date" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="2011-04-03">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">National ID</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="23442342343">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* Phone Number</label>
+                        <div class="flex">
+                            <select class="px-3 py-2 border rounded-l-lg dark:bg-darkbg dark:border-gray-600">
+                                <option>+92 (Pakistan)</option>
+                            </select>
+                            <input type="tel" class="w-full px-3 py-2 border rounded-r-lg dark:bg-darkbg dark:border-gray-600" value="123213123">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Blood Group</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Marital Status</label>
+                        <select class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600">
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Divorced</option>
+                            <option>Widowed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Gender</label>
+                        <select class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600">
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h4 class="text-md font-bold dark:text-white mb-4">Emergency Contact</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* Full Name</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">* Relation</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Details Tab Content -->
+            <div class="tab-content">
+                <h4 class="text-md font-bold dark:text-white mb-4">Employment Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Bank name</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="EMP12345">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Branch name</label>
+                        <input type="date" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="2023-07-01">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Account Title</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="Web Department">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">IBAN</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="Backend Developer">
+                    </div>
+                </div>
+                
+                <h4 class="text-md font-bold dark:text-white mb-4">Salary Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Basic Salary</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" placeholder="Enter amount">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Bank Account Number</label>
+                        <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" placeholder="Enter account number">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Documents Tab Content -->
+            <div class="tab-content">
+                <h4 class="text-md font-bold dark:text-white mb-4">Upload Documents</h4>
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">Document Type</label>
+                    <select class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600 mb-4">
+                        <option>Select document type</option>
+                        <option>Resume</option>
+                        <option>Identity card Front </option>
+                        <option>Identity card back</option>
+                        <option>liscence</option>
+                        <option>Other</option>
+                    </select>
+                    
+                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-500 dark:text-gray-400">Drag & drop files here or click to browse</p>
+                        <input type="file" class="hidden" id="documentUpload">
+                        <button class="mt-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90">
+                            Select Files
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <h5 class="font-medium text-gray-700 dark:text-gray-300 mb-2">Uploaded Documents</h5>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                            <div>
+                                <p class="text-gray-800 dark:text-gray-200">ID_Card.pdf</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Uploaded: 15 Jan 2023</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-primary hover:text-primary-dark">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Credentials Tab Content -->
+            <div class="tab-content">
+                <h4 class="text-md font-bold dark:text-white mb-4">Login Credentials</h4>
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                    <input type="text" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" value="umar.gul">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                        <input type="password" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" placeholder="Enter new password">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+                        <input type="password" class="w-full px-3 py-2 border rounded-lg dark:bg-darkbg dark:border-gray-600" placeholder="Confirm new password">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600">
+                        <span class="ml-2 text-gray-700 dark:text-gray-300">Require password change on next login</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3 mt-6">
+                <button id="cancelEditProfile" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                    Cancel
+                </button>
+                <button id="saveProfile" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbotContainer" class="chatbot-container dark:bg-darkcard dark:text-white">
+        <div class="p-4 border-b dark:border-gray-600">
+            <h3 class="font-bold"><i class="fas fa-robot mr-2"></i>Hey! I'm Your c20 MS</h3>
+            <button id="closeChatbot" class="float-right text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-4 h-64 overflow-y-auto" id="chatMessages">
+            <!-- Chat messages will appear here -->
+            <div class="text-center text-gray-500 dark:text-gray-400 mt-20">
+                <i class="fas fa-comments text-4xl mb-4"></i>
+                <p>How can we help you today?</p>
+            </div>
+        </div>
+        <div class="p-4 border-t dark:border-gray-600">
+            <div class="flex">
+                <input type="text" placeholder="Type your message..." id="chatInput"
+                    class="w-full p-2 rounded-l border dark:bg-darkbg dark:border-gray-600">
+                <button id="sendMessage" class="bg-primary text-white px-4 py-2 rounded-r">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buttons -->
+    <div class="fixed bottom-6 right-6 flex space-x-4">
+        <!-- Chatbot Button -->
+        <button id="chatbotToggle"
+            class="p-4 bg-primary rounded-full text-white shadow-lg hover:bg-opacity-90 transition-colors">
+            <i class="fas fa-comment-dots text-xl"></i>
+        </button>
+
+        <!-- Dark Mode Toggle Button -->
+        <button id="darkModeToggle"
+            class="p-4 bg-black rounded-full text-white shadow-lg hover:bg-gray-800 transition-colors">
+            <i id="darkIcon" class="fas fa-moon text-xl dark:hidden"></i>
+            <i id="lightIcon" class="fas fa-sun text-xl hidden dark:block"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkIcon = document.getElementById('darkIcon');
+            const lightIcon = document.getElementById('lightIcon');
+            const dropdowns = document.querySelectorAll('.dropdown');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const editProfileModal = document.getElementById('editProfileModal');
+            const closeEditProfileModal = document.getElementById('closeEditProfileModal');
+            const cancelEditProfile = document.getElementById('cancelEditProfile');
+            const editableFields = document.querySelectorAll('.editable-field');
+            const chatbotToggle = document.getElementById('chatbotToggle');
+            const closeChatbot = document.getElementById('closeChatbot');
+            const chatbotContainer = document.getElementById('chatbotContainer');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessage = document.getElementById('sendMessage');
+            const chatMessages = document.getElementById('chatMessages');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Initialize dark mode
+            function initDarkMode() {
+                const isDark = localStorage.getItem('darkMode') === 'true' ||
+                    (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateIcons();
+            }
+
+            // Update icon visibility
+            function updateIcons() {
+                const isDark = document.documentElement.classList.contains('dark');
+                darkIcon.classList.toggle('hidden', isDark);
+                lightIcon.classList.toggle('hidden', !isDark);
+            }
+
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function () {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                updateIcons();
+            });
+
+            // Toggle chatbot
+            chatbotToggle.addEventListener('click', function () {
+                chatbotContainer.classList.toggle('active');
+            });
+
+            closeChatbot.addEventListener('click', function () {
+                chatbotContainer.classList.remove('active');
+            });
+
+            // Simple chatbot functionality
+            sendMessage.addEventListener('click', function () {
+                const message = chatInput.value.trim();
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+
+                    // Simulate bot response
+                    setTimeout(() => {
+                        addMessage("Hey! I'm C2O MS Bot, your intelligent workplace companion. I'm here 24/7 to help you optimize your work life!", 'bot');
+                    }, 1000);
+
+                    chatInput.value = '';
+                }
+            });
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `mb-2 p-2 rounded-lg ${sender === 'user' ? 'bg-primary text-white ml-auto max-w-xs' : 'bg-gray-200 dark:bg-gray-700 mr-auto max-w-xs'}`;
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Dropdown click functionality
+            dropdowns.forEach(dropdown => {
+                const button = dropdown.querySelector('button');
+                const arrow = dropdown.querySelector('.dropdown-arrow');
+
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                    arrow.classList.toggle('rotate-180');
+
+                    // Close other dropdowns
+                    dropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('active');
+                            otherDropdown.querySelector('.dropdown-arrow').classList.remove('rotate-180');
+                        }
+                    });
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.dropdown')) {
+                    dropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                        dropdown.querySelector('.dropdown-arrow').classList.remove('rotate-180');
+                    });
+                }
+            });
+
+            // Sidebar toggle
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('sidebar-collapsed');
+            });
+
+            // Mobile menu toggle
+            mobileMenuButton.addEventListener('click', function () {
+                sidebar.classList.toggle('hidden');
+            });
+
+            // Edit profile modal
+            editProfileBtn.addEventListener('click', function() {
+                editProfileModal.style.display = 'flex';
+            });
+
+            closeEditProfileModal.addEventListener('click', function() {
+                editProfileModal.style.display = 'none';
+            });
+
+            cancelEditProfile.addEventListener('click', function() {
+                editProfileModal.style.display = 'none';
+            });
+
+            editProfileModal.addEventListener('click', function(e) {
+                if (e.target === editProfileModal) {
+                    editProfileModal.style.display = 'none';
+                }
+            });
+
+            // Tab functionality
+            tabBtns.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    btn.classList.add('active');
+                    tabContents[index].classList.add('active');
+                });
+            });
+
+            // Initialize on page load
+            initDarkMode();
+        });
+    </script>
+</body>
+
+</html>
